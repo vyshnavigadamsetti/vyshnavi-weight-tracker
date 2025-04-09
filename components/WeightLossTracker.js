@@ -1,4 +1,3 @@
-'use client';
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "../components/ui/card";
 import { Checkbox } from "../components/ui/checkbox";
@@ -22,25 +21,30 @@ const initialPlan = [
 
 export default function WeightLossTracker() {
   const [tracker, setTracker] = useState(() => {
-    const saved = localStorage.getItem("healthTracker");
-    return saved
-      ? JSON.parse(saved)
-      : initialPlan.map((item) => ({
-          ...item,
-          breakfastDone: false,
-          lunchDone: false,
-          dinnerDone: false,
-          workoutDone: false,
-          water: "",
-          sleep: "",
-          caloriesBurned: "",
-          appleWatchSynced: false,
-          weight: ""
-        }));
+    if (typeof window !== "undefined") {
+      // Check if localStorage is available
+      const saved = localStorage.getItem("healthTracker");
+      return saved ? JSON.parse(saved) : initialPlan.map((item) => ({
+        ...item,
+        breakfastDone: false,
+        lunchDone: false,
+        dinnerDone: false,
+        workoutDone: false,
+        water: "",
+        sleep: "",
+        caloriesBurned: "",
+        appleWatchSynced: false,
+        weight: ""
+      }));
+    } else {
+      return initialPlan;
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem("healthTracker", JSON.stringify(tracker));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("healthTracker", JSON.stringify(tracker));
+    }
   }, [tracker]);
 
   const toggleCheck = (index, key) => {
